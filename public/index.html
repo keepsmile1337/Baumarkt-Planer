@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baumarkt Saisonplaner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Login-Container -->
+    <div id="login-container" class="container">
+        <div class="login-wrapper">
+            <div class="login-header">
+                <h1>Baumarkt Saisonplaner</h1>
+                <p>Bitte melden Sie sich mit Ihrer Niederlassungsnummer an</p>
+                <p class="hint">Hinweis: Verwenden Sie "admin" für Administrator-Zugang</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="branch-id">Niederlassungsnummer:</label>
+                    <input type="text" id="branch-id" placeholder="z.B. 537 oder admin" required>
+                </div>
+                <button type="submit" class="btn login-btn">Anmelden</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hauptanwendung -->
+    <div id="app-container" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <h1>Baumarkt Saisonplaner</h1>
+                <span id="header-branch-id">NL 537</span>
+            </div>
+            <div class="header-center">
+                <div class="header-filters">
+                    <div class="filter-toggle">
+                        <input type="checkbox" id="branch-filter" checked>
+                        <label for="branch-filter">Nur meine NL</label>
+                    </div>
+                    <div class="dropdown-filter">
+                        <button class="btn filter-btn" id="depts-filter-btn">
+                            <i class="fas fa-tags"></i> Abteilungen
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content" id="depts-dropdown">
+                            <div class="filter-items">
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-garten" checked>
+                                    <label for="filter-garten" style="background-color: var(--dept-garten);">Garten</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-werkzeug" checked>
+                                    <label for="filter-werkzeug" style="background-color: var(--dept-werkzeug);">Werkzeug</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-sanitaer" checked>
+                                    <label for="filter-sanitaer" style="background-color: var(--dept-sanitaer);">Sanitär</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-baustoffe" checked>
+                                    <label for="filter-baustoffe" style="background-color: var(--dept-baustoffe);">Baustoffe</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-holz" checked>
+                                    <label for="filter-holz" style="background-color: var(--dept-holz);">Holz</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-farben" checked>
+                                    <label for="filter-farben" style="background-color: var(--dept-farben);">Farben</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-elektro" checked>
+                                    <label for="filter-elektro" style="background-color: var(--dept-elektro);">Elektro</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-dekoration" checked>
+                                    <label for="filter-dekoration" style="background-color: var(--dept-dekoration);">Dekoration</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown-filter">
+                        <button class="btn filter-btn" id="tl-filter-btn">
+                            <i class="fas fa-users"></i> Teamleiter
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content" id="tl-dropdown">
+                            <div class="filter-items" id="teamleader-filters">
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-tl1" checked>
+                                    <label for="filter-tl1">Teamleiter 1</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-tl2" checked>
+                                    <label for="filter-tl2">Teamleiter 2</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-tl3" checked>
+                                    <label for="filter-tl3">Teamleiter 3</label>
+                                </div>
+                                <div class="filter-item">
+                                    <input type="checkbox" id="filter-tl4" checked>
+                                    <label for="filter-tl4">Teamleiter 4</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="tl-settings-btn" class="btn settings-btn">
+                    <i class="fas fa-cog"></i> TL-Einstellungen
+                </button>
+                <button id="logout-btn" class="btn">
+                    <i class="fas fa-sign-out-alt"></i> Abmelden
+                </button>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Rollen-Info-Banner -->
+            <div id="role-banner" class="role-banner">
+                <div id="admin-banner" class="admin-role" style="display: none;">
+                    <i class="fas fa-crown"></i> 
+                    <span>Administrator-Modus: Sie können Themen erstellen und verwalten</span>
+                </div>
+                <div id="user-banner" class="user-role" style="display: none;">
+                    <i class="fas fa-user"></i>
+                    <span>Benutzer-Modus: Sie können Bilder zu bestehenden Themen hochladen</span>
+                </div>
+            </div>
+
+            <!-- Kalender -->
+            <div class="calendar-section">
+                <div class="calendar-navigation">
+                    <button id="prev-month" class="btn nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span id="month-year">Januar 2023</span>
+                    <button id="current-month" class="btn nav-btn current-btn">Aktuell</button>
+                    <button id="next-month" class="btn nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <div id="calendar-container">
+                    <!-- Kalender wird dynamisch über JavaScript geladen -->
+                    <div class="calendar-loading">
+                        <div class="spinner"></div>
+                        <p>Kalender wird geladen...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal für Theme hinzufügen/bearbeiten -->
+    <div id="theme-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="theme-modal-title">Thema hinzufügen</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="theme-form">
+                    <input type="hidden" id="theme-id">
+                    <input type="hidden" id="theme-date">
+                    <input type="hidden" id="theme-month">
+                    
+                    <div class="form-group">
+                        <label for="theme-title">Titel:</label>
+                        <input type="text" id="theme-title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="theme-department">Abteilung:</label>
+                        <select id="theme-department" required>
+                            <option value="Garten">Garten</option>
+                            <option value="Werkzeug">Werkzeug</option>
+                            <option value="Sanitär">Sanitär</option>
+                            <option value="Baustoffe">Baustoffe</option>
+                            <option value="Holz">Holz</option>
+                            <option value="Farben">Farben</option>
+                            <option value="Elektro">Elektro</option>
+                            <option value="Dekoration">Dekoration</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="theme-team-leader">Teamleiter:</label>
+                        <select id="theme-team-leader" required>
+                            <!-- Wird dynamisch mit JS befüllt -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="theme-description">Beschreibung (optional):</label>
+                        <textarea id="theme-description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="delete-theme-btn" class="btn delete-btn">
+                            <i class="fas fa-trash"></i> Löschen
+                        </button>
+                        <button type="submit" class="btn save-btn">
+                            <i class="fas fa-save"></i> Speichern
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal für Teamleiter-Einstellungen -->
+    <div id="teamleader-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Teamleiter-Einstellungen</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="teamleader-form">
+                    <div class="teamleader-entries">
+                        <div class="teamleader-entry">
+                            <h3>Teamleiter 1</h3>
+                            <div class="department-assignment">
+                                <div class="form-group">
+                                    <label>Abteilungen:</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-garten" checked>
+                                            <label for="tl1-garten">Garten</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-werkzeug">
+                                            <label for="tl1-werkzeug">Werkzeug</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-sanitaer">
+                                            <label for="tl1-sanitaer">Sanitär</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-baustoffe">
+                                            <label for="tl1-baustoffe">Baustoffe</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-holz">
+                                            <label for="tl1-holz">Holz</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-farben">
+                                            <label for="tl1-farben">Farben</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-elektro">
+                                            <label for="tl1-elektro">Elektro</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl1-dekoration">
+                                            <label for="tl1-dekoration">Dekoration</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="teamleader-entry">
+                            <h3>Teamleiter 2</h3>
+                            <div class="department-assignment">
+                                <div class="form-group">
+                                    <label>Abteilungen:</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-garten">
+                                            <label for="tl2-garten">Garten</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-werkzeug" checked>
+                                            <label for="tl2-werkzeug">Werkzeug</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-sanitaer">
+                                            <label for="tl2-sanitaer">Sanitär</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-baustoffe" checked>
+                                            <label for="tl2-baustoffe">Baustoffe</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-holz">
+                                            <label for="tl2-holz">Holz</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-farben">
+                                            <label for="tl2-farben">Farben</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-elektro" checked>
+                                            <label for="tl2-elektro">Elektro</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl2-dekoration">
+                                            <label for="tl2-dekoration">Dekoration</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="teamleader-entry">
+                            <h3>Teamleiter 3</h3>
+                            <div class="department-assignment">
+                                <div class="form-group">
+                                    <label>Abteilungen:</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-garten">
+                                            <label for="tl3-garten">Garten</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-werkzeug">
+                                            <label for="tl3-werkzeug">Werkzeug</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-sanitaer" checked>
+                                            <label for="tl3-sanitaer">Sanitär</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-baustoffe">
+                                            <label for="tl3-baustoffe">Baustoffe</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-holz" checked>
+                                            <label for="tl3-holz">Holz</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-farben" checked>
+                                            <label for="tl3-farben">Farben</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-elektro">
+                                            <label for="tl3-elektro">Elektro</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl3-dekoration">
+                                            <label for="tl3-dekoration">Dekoration</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="teamleader-entry">
+                            <h3>Teamleiter 4</h3>
+                            <div class="department-assignment">
+                                <div class="form-group">
+                                    <label>Abteilungen:</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-garten">
+                                            <label for="tl4-garten">Garten</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-werkzeug">
+                                            <label for="tl4-werkzeug">Werkzeug</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-sanitaer">
+                                            <label for="tl4-sanitaer">Sanitär</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-baustoffe">
+                                            <label for="tl4-baustoffe">Baustoffe</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-holz">
+                                            <label for="tl4-holz">Holz</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-farben">
+                                            <label for="tl4-farben">Farben</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-elektro">
+                                            <label for="tl4-elektro">Elektro</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="tl4-dekoration" checked>
+                                            <label for="tl4-dekoration">Dekoration</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn save-btn">
+                            <i class="fas fa-save"></i> Änderungen speichern
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Einbindungen -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script src="js/firestore-service.js" type="module"></script>
+    <script src="js/storage-service.js" type="module"></script>
+    <script src="js/calendar.js" type="module"></script>
+    <script src="js/ui.js" type="module"></script>
+    <script src="js/main.js" type="module"></script>
+</body>
+</html> 

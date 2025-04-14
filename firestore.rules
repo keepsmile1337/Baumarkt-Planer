@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Utility-Funktion: Benutzer-NL abrufen
+    function getUserBranch() {
+      // In einer vollständigen Implementierung würde hier die Abfrage der Benutzer-NL erfolgen
+      // Da wir localStorage verwenden, können wir nur auf der Client-Seite die NL abrufen
+      // Diese Funktion ist daher nur ein Platzhalter für eine vollständige Auth-Implementierung
+      return true; // Immer erlauben für dieses Beispiel
+    }
+    
+    // Abteilungen - für alle lesbar, nicht schreibbar
+    match /departments/{departmentId} {
+      allow read: if true;
+      allow write: if false; // Nur über Admin-Panel oder Initialcode
+    }
+    
+    // Teamleiter - für alle lesbar, nicht schreibbar
+    match /teamLeaders/{teamLeaderId} {
+      allow read: if true;
+      allow write: if false; // Nur über Admin-Panel oder Initialcode
+    }
+    
+    // Niederlassungen - Nur das eigene Dokument lesen/schreiben
+    match /branches/{branchNumber} {
+      allow read: if true;
+      allow write: if true; // In einer vollständigen Version würde hier geprüft, ob die NL mit der Benutzer-NL übereinstimmt
+    }
+    
+    // Themen - Alle lesbar, aber nur von eigener NL erstellbar
+    match /themes/{themeId} {
+      allow read: if true;
+      allow create: if request.resource.data.branchNumber != null;
+      allow update, delete: if request.resource.data.branchNumber == resource.data.branchNumber 
+                            && getUserBranch();
+    }
+    
+    // Themen-Bilder - Alle lesbar, nur von eigener NL hochladbar
+    match /themeImages/{imageId} {
+      allow read: if true;
+      allow create: if request.resource.data.uploadedByBranch != null;
+      allow update, delete: if false; // Bilder sollten nicht aktualisiert oder gelöscht werden können
+    }
+  }
+} 

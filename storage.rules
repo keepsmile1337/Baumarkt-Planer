@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Alle Bilder sind lesbar
+    match /{allPaths=**} {
+      allow read: if true;
+    }
+    
+    // Bilder können nur im eigenen NL-Pfad gespeichert werden
+    match /themes/{branchNumber}/{themeId}/{fileName} {
+      // In einer vollständigen Implementierung würde hier geprüft,
+      // ob die NL mit der Benutzer-NL übereinstimmt
+      allow write: if true;
+    }
+  }
+} 

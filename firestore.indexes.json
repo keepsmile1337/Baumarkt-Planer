@@ -1,0 +1,58 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "themes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "year", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "themes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "year", "order": "ASCENDING" },
+        { "fieldPath": "branchNumber", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "themes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "year", "order": "ASCENDING" },
+        { "fieldPath": "departmentId", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "themes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "year", "order": "ASCENDING" },
+        { "fieldPath": "branchNumber", "order": "ASCENDING" },
+        { "fieldPath": "departmentId", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "themeImages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "themeId", "order": "ASCENDING" },
+        { "fieldPath": "uploadTimestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "themeImages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "themeId", "order": "ASCENDING" },
+        { "fieldPath": "uploadedByBranch", "order": "ASCENDING" },
+        { "fieldPath": "uploadTimestamp", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+} 
