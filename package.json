@@ -1,0 +1,38 @@
+{
+  "name": "baumarkt-kalender",
+  "version": "1.0.0",
+  "description": "Ein Kalender-Tool für Baumarkt-Filialen zur Verwaltung von Abteilungs-Themen und Bildern.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keepsmile1337/Baumarkt-Planer.git"
+  },
+  "keywords": [
+    "baumarkt",
+    "kalender",
+    "supabase",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/keepsmile1337/Baumarkt-Planer/issues"
+  },
+  "homepage": "https://github.com/keepsmile1337/Baumarkt-Planer#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.21.0",
+    "next": "^13.4.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.41.0",
+    "eslint-config-next": "^13.4.4"
+  }
+} 

@@ -1,13 +1,14 @@
-import { storage } from './firebase-config.js';
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
-import { getBranchNumber } from './auth.js';
-import { addThemeImageMetadata } from './firestore-service.js';
+// storage-service.js - Supabase-basierte Speicherfunktionen
+
+import { storage } from '../../supabase.js';
+import { getCurrentBranchId } from './auth-service.js';
+import { addThemeImageMetadata } from './db-service.js';
 
 // Bild für ein Thema hochladen
 export const uploadThemeImage = async (themeId, file) => {
     try {
-        const branchNumber = getBranchNumber();
-        if (!branchNumber) {
+        const branchId = getCurrentBranchId();
+        if (!branchId) {
             throw new Error("Benutzer ist nicht angemeldet");
         }
         
@@ -15,23 +16,41 @@ export const uploadThemeImage = async (themeId, file) => {
         const timestamp = Date.now();
         const fileName = `${file.name.split('.')[0]}_${timestamp}.${file.name.split('.').pop()}`;
         
-        // Storage-Referenz erstellen
-        const imagePath = `themes/${branchNumber}/${themeId}/${fileName}`;
-        const storageRef = ref(storage, imagePath);
+        // Storage-Pfad erstellen
+        const filePath = `themes/${branchId}/${themeId}/${fileName}`;
         
         // Datei hochladen
-        const snapshot = await uploadBytes(storageRef, file);
-        console.log('Bild erfolgreich hochgeladen:', snapshot);
+        await storage.uploadFile('theme-images', filePath, file);
         
-        // Download-URL abrufen
-        const downloadURL = await getDownloadURL(storageRef);
+        // Öffentliche URL generieren
+        const publicUrl = storage.getPublicUrl('theme-images', filePath);
         
-        // Metadaten in Firestore speichern
-        await addThemeImageMetadata(themeId, downloadURL);
+        // Metadaten in Datenbank speichern
+        await addThemeImageMetadata(themeId, publicUrl);
         
-        return downloadURL;
+        return publicUrl;
     } catch (error) {
         console.error("Fehler beim Hochladen des Bildes:", error);
+        throw error;
+    }
+};
+
+// Bild löschen
+export const deleteThemeImage = async (imagePath) => {
+    try {
+        // Bucket und Pfad aus kompletter URL extrahieren
+        // Annahme: Format ist https://yourproject.supabase.co/storage/v1/object/public/bucket/path
+        const url = new URL(imagePath);
+        const pathSegments = url.pathname.split('/');
+        
+        // Bucket und Pfad bestimmen
+        const bucket = pathSegments[pathSegments.length - 2];
+        const path = pathSegments[pathSegments.length - 1];
+        
+        await storage.deleteFile(bucket, path);
+        console.log('Bild erfolgreich gelöscht:', imagePath);
+    } catch (error) {
+        console.error("Fehler beim Löschen des Bildes:", error);
         throw error;
     }
 }; 
